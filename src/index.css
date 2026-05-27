@@ -4,53 +4,44 @@
 
 @layer base {
   :root {
-    --background: 0 0% 5%;
-    --foreground: 45 20% 92%;
-
-    --card: 0 0% 8%;
-    --card-foreground: 45 20% 92%;
-
-    --popover: 0 0% 8%;
-    --popover-foreground: 45 20% 92%;
-
-    --primary: 45 80% 60%;
-    --primary-foreground: 0 0% 5%;
-
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 45 20% 92%;
-
-    --muted: 0 0% 12%;
-    --muted-foreground: 45 10% 55%;
-
-    --accent: 45 80% 60%;
-    --accent-foreground: 0 0% 5%;
-
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 0 0% 10%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 36 30% 94%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 36 20% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 36 30% 90%;
+    --accent-foreground: 0 0% 10%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 0 0% 10%;
+    --radius: 0rem;
 
-    --border: 45 20% 18%;
-    --input: 0 0% 12%;
-    --ring: 45 80% 60%;
+    --cream: #f5f0e8;
+    --cream-dark: #ede4d0;
+    --beige: #d4c5a9;
+    --sand: #c8b89a;
+    --ink: #1a1a1a;
+    --ink-mid: #333333;
+    --ink-light: #666666;
+    --warm: #b5956a;
 
-    --radius: 0.25rem;
-
-    --gold: #c9a84c;
-    --gold-light: #e8c97a;
-    --gold-dark: #8b6914;
-    --silver: #a8b4c0;
-    --silver-light: #d4dce6;
-    --obsidian: #0a0a0a;
-    --charcoal: #141414;
-    --charcoal-mid: #1c1c1c;
-
-    --sidebar-background: 0 0% 8%;
-    --sidebar-foreground: 45 20% 92%;
-    --sidebar-primary: 45 80% 60%;
-    --sidebar-primary-foreground: 0 0% 5%;
-    --sidebar-accent: 0 0% 12%;
-    --sidebar-accent-foreground: 45 20% 92%;
-    --sidebar-border: 45 20% 18%;
-    --sidebar-ring: 45 80% 60%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 10%;
+    --sidebar-primary: 0 0% 10%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 36 30% 94%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 0 0% 88%;
+    --sidebar-ring: 0 0% 10%;
   }
 }
 
@@ -58,194 +49,115 @@
   * {
     @apply border-border;
   }
-
   html {
     scroll-behavior: smooth;
   }
-
   body {
-    @apply bg-background text-foreground;
+    @apply bg-white text-[#1A1A1A];
     font-family: "Montserrat", sans-serif;
-    background-color: var(--obsidian);
-    color: #ede8df;
   }
-
   h1,
   h2,
   h3,
-  h4 {
-    font-family: "Cormorant Garamond", serif;
+  h4,
+  h5 {
+    font-family: "Oswald", sans-serif;
+    letter-spacing: 0.02em;
   }
 }
 
 @layer utilities {
   .font-display {
-    font-family: "Cormorant Garamond", serif;
+    font-family: "Oswald", sans-serif;
   }
   .font-body {
     font-family: "Montserrat", sans-serif;
   }
 
-  .text-gold {
-    color: var(--gold);
+  .bg-cream {
+    background-color: var(--cream);
   }
-  .text-gold-light {
-    color: var(--gold-light);
+  .bg-cream-dark {
+    background-color: var(--cream-dark);
   }
-  .text-silver {
-    color: var(--silver);
+  .bg-ink {
+    background-color: var(--ink);
   }
-  .text-silver-light {
-    color: var(--silver-light);
+  .text-ink-light {
+    color: var(--ink-light);
   }
-
-  .bg-gold {
-    background-color: var(--gold);
-  }
-  .bg-charcoal {
-    background-color: var(--charcoal);
-  }
-  .bg-charcoal-mid {
-    background-color: var(--charcoal-mid);
-  }
-  .bg-obsidian {
-    background-color: var(--obsidian);
+  .text-warm {
+    color: var(--warm);
   }
 
-  .border-gold {
-    border-color: var(--gold);
+  .btn-primary {
+    background-color: var(--ink);
+    color: #fff;
+    font-family: "Oswald", sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    padding: 0.9rem 2rem;
+    display: inline-block;
+    transition:
+      background 0.22s,
+      transform 0.2s;
+    cursor: pointer;
   }
-  .border-gold\/20 {
-    border-color: rgba(201, 168, 76, 0.2);
-  }
-  .border-gold\/30 {
-    border-color: rgba(201, 168, 76, 0.3);
-  }
-  .border-gold\/50 {
-    border-color: rgba(201, 168, 76, 0.5);
-  }
-
-  .gradient-gold {
-    background: linear-gradient(
-      135deg,
-      var(--gold-dark) 0%,
-      var(--gold) 40%,
-      var(--gold-light) 60%,
-      var(--gold) 100%
-    );
+  .btn-primary:hover {
+    background-color: #333;
+    transform: translateY(-1px);
   }
 
-  .gradient-gold-text {
-    background: linear-gradient(
-      135deg,
-      var(--gold-dark) 0%,
-      var(--gold-light) 50%,
-      var(--gold) 100%
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .btn-outline {
+    background: transparent;
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+    font-family: "Oswald", sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    padding: 0.9rem 2rem;
+    display: inline-block;
+    transition: all 0.22s;
+    cursor: pointer;
+  }
+  .btn-outline:hover {
+    background: var(--ink);
+    color: #fff;
   }
 
-  .gradient-silver-text {
-    background: linear-gradient(
-      135deg,
-      #8a9baa 0%,
-      var(--silver-light) 50%,
-      var(--silver) 100%
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .section-tag {
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--warm);
   }
 
-  .gold-line {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  .card-hover {
+    transition:
+      transform 0.28s ease,
+      box-shadow 0.28s ease;
   }
-
-  .gold-line-v {
-    width: 1px;
-    background: linear-gradient(180deg, transparent, var(--gold), transparent);
-  }
-
-  .luxury-card {
-    background: linear-gradient(145deg, #1a1a1a 0%, #111111 100%);
-    border: 1px solid rgba(201, 168, 76, 0.2);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .luxury-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(201, 168, 76, 0.6),
-      transparent
-    );
-  }
-
-  .noise-overlay {
-    position: relative;
-  }
-
-  .noise-overlay::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    opacity: 0.4;
-  }
-
-  .shimmer {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .shimmer::after {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: -75%;
-    width: 50%;
-    height: 200%;
-    background: linear-gradient(
-      to right,
-      transparent,
-      rgba(201, 168, 76, 0.08),
-      transparent
-    );
-    transform: skewX(-20deg);
-    animation: shimmer 4s infinite;
-  }
-
-  @keyframes shimmer {
-    0% {
-      left: -75%;
-    }
-    100% {
-      left: 125%;
-    }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.09);
   }
 
   @keyframes fadeUp {
     from {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(22px);
     }
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
-
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -254,126 +166,49 @@
       opacity: 1;
     }
   }
-
-  @keyframes scaleIn {
+  @keyframes slideRight {
     from {
       opacity: 0;
-      transform: scale(0.95);
+      transform: translateX(-16px);
     }
     to {
       opacity: 1;
-      transform: scale(1);
+      transform: translateX(0);
     }
   }
 
-  @keyframes goldPulse {
-    0%,
-    100% {
-      opacity: 0.6;
-    }
-    50% {
-      opacity: 1;
-    }
+  .anim-fade-up {
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards;
+  }
+  .anim-fade-in {
+    opacity: 0;
+    animation: fadeIn 0.7s ease forwards;
+  }
+  .anim-slide-r {
+    opacity: 0;
+    animation: slideRight 0.7s ease forwards;
   }
 
-  .animate-fade-up {
-    animation: fadeUp 0.8s ease forwards;
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 1s ease forwards;
-  }
-
-  .animate-scale-in {
-    animation: scaleIn 0.6s ease forwards;
-  }
-
-  .animate-gold-pulse {
-    animation: goldPulse 3s ease-in-out infinite;
-  }
-
-  .delay-100 {
+  .d100 {
     animation-delay: 0.1s;
   }
-  .delay-200 {
+  .d200 {
     animation-delay: 0.2s;
   }
-  .delay-300 {
+  .d300 {
     animation-delay: 0.3s;
   }
-  .delay-400 {
+  .d400 {
     animation-delay: 0.4s;
   }
-  .delay-500 {
+  .d500 {
     animation-delay: 0.5s;
   }
-  .delay-600 {
+  .d600 {
     animation-delay: 0.6s;
   }
-  .delay-700 {
+  .d700 {
     animation-delay: 0.7s;
-  }
-  .delay-800 {
-    animation-delay: 0.8s;
-  }
-
-  .btn-gold {
-    background: linear-gradient(
-      135deg,
-      var(--gold-dark),
-      var(--gold),
-      var(--gold-light)
-    );
-    color: #0a0a0a;
-    font-family: "Montserrat", sans-serif;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-gold:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 30px rgba(201, 168, 76, 0.4);
-  }
-
-  .btn-outline-gold {
-    background: transparent;
-    color: var(--gold);
-    border: 1px solid var(--gold);
-    font-family: "Montserrat", sans-serif;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    transition: all 0.3s ease;
-  }
-
-  .btn-outline-gold:hover {
-    background: rgba(201, 168, 76, 0.1);
-    box-shadow: 0 0 20px rgba(201, 168, 76, 0.2);
-  }
-
-  .section-label {
-    font-family: "Montserrat", sans-serif;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--gold);
-  }
-
-  .hover-gold-lift {
-    transition:
-      transform 0.3s ease,
-      box-shadow 0.3s ease;
-  }
-
-  .hover-gold-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(201, 168, 76, 0.2);
   }
 }

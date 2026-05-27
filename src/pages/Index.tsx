@@ -1,31 +1,30 @@
 import { useState, useEffect, useRef } from "react";
 import Icon from "@/components/ui/icon";
 
-type LuxeIcon = "Layers" | "Fingerprint" | "Package" | "Truck" | "Award" | "MessageSquare" | "Phone" | "MessageCircle" | "Mail" | "ChevronDown" | "Menu" | "X" | "Plus" | "Minus";
+type ArtIcon = "Phone" | "Mail" | "MapPin" | "Clock" | "MessageCircle" | "ChevronDown" | "ChevronLeft" | "ChevronRight" | "Menu" | "X" | "Plus" | "Minus" | "Search" | "User" | "Layers" | "Fingerprint" | "Package" | "Truck" | "Award" | "CheckCircle" | "Star";
 
-const IMG_HERO = "https://cdn.poehali.dev/projects/cd883386-6402-4459-8df4-61b06ba8676e/files/3a4bf924-9453-4b60-86c0-a6d21e410f25.jpg";
+const IMG_HERO    = "https://cdn.poehali.dev/projects/cd883386-6402-4459-8df4-61b06ba8676e/files/3a4bf924-9453-4b60-86c0-a6d21e410f25.jpg";
 const IMG_CATALOG = "https://cdn.poehali.dev/projects/cd883386-6402-4459-8df4-61b06ba8676e/files/e2fd5be6-8a23-470d-9c07-43f7b62bdc1c.jpg";
-const IMG_OPEN = "https://cdn.poehali.dev/projects/cd883386-6402-4459-8df4-61b06ba8676e/files/a65bbf27-23e4-47af-830c-882229b1d650.jpg";
+const IMG_OPEN    = "https://cdn.poehali.dev/projects/cd883386-6402-4459-8df4-61b06ba8676e/files/a65bbf27-23e4-47af-830c-882229b1d650.jpg";
 
-function useInView(threshold = 0.15) {
+function useInView(threshold = 0.12) {
   const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
+  const [vis, setVis] = useState(false);
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) setInView(true);
-    }, { threshold });
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold });
+    if (ref.current) io.observe(ref.current);
+    return () => io.disconnect();
   }, []);
-  return { ref, inView };
+  return { ref, vis };
 }
 
-function AnimatedSection({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  const { ref, inView } = useInView();
+function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
+  const { ref, vis } = useInView();
   return (
     <div
       ref={ref}
-      className={`transition-all duration-1000 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"} ${className}`}
+      style={{ animationDelay: `${delay}ms` }}
+      className={`transition-all duration-700 ${vis ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"} ${className}`}
     >
       {children}
     </div>
@@ -33,624 +32,558 @@ function AnimatedSection({ children, className = "" }: { children: React.ReactNo
 }
 
 const promos = [
-  {
-    badge: "ХИТ СЕЗОНА",
-    title: "Бархатные коробки с тиснением",
-    desc: "Именное тиснение золотой фольгой + шёлковый наполнитель. Минимальный заказ 50 шт.",
-    tag: "–20% при заказе от 100 шт",
-    accent: "gold",
-  },
-  {
-    badge: "НОВИНКА",
-    title: "Magnetic Box Exclusive",
-    desc: "Магнитные крышки, матовое покрытие soft-touch, тиснение серебром. Люкс-сегмент.",
-    tag: "Доставка за 14 дней",
-    accent: "silver",
-  },
-  {
-    badge: "ДЛЯ БРЕНДОВ",
-    title: "Корпоративные наборы",
-    desc: "Полный брендинг: лого, фирменные цвета, брендбук на упаковке. От 200 комплектов.",
-    tag: "Брендинг в подарок",
-    accent: "gold",
-  },
-  {
-    badge: "БЛОГЕРАМ",
-    title: "Unboxing-упаковка",
-    desc: "Создаём wow-эффект при распаковке. Идеально для коллабораций и запусков.",
-    tag: "Пробная партия от 10 шт",
-    accent: "silver",
-  },
+  { badge: "ХИТ СЕЗОНА", title: "Бархатные коробки с тиснением", desc: "Именное тиснение золотой фольгой + шёлковый наполнитель. Минимальный заказ 50 шт.", tag: "–20% при заказе от 100 шт." },
+  { badge: "НОВИНКА", title: "Magnetic Box Exclusive", desc: "Магнитные крышки, матовое покрытие soft-touch, тиснение серебром. Люкс-сегмент.", tag: "Доставка за 14 дней" },
+  { badge: "ДЛЯ БРЕНДОВ", title: "Корпоративные наборы", desc: "Полный брендинг: лого, фирменные цвета, брендбук на упаковке. От 200 комплектов.", tag: "Брендинг в подарок" },
+  { badge: "БЛОГЕРАМ", title: "Unboxing-упаковка", desc: "Создаём wow-эффект при распаковке. Идеально для коллабораций и запусков.", tag: "Пробная партия от 10 шт." },
 ];
 
 const catalog = [
-  {
-    name: "Velvet Black Box",
-    category: "Премиум",
-    desc: "Бархатное покрытие, золотое тиснение, магнитная крышка",
-    price: "от 890 ₽/шт",
-    tag: "Бестселлер",
-    img: IMG_HERO,
-  },
-  {
-    name: "Crystal White",
-    category: "Свадьбы / Events",
-    desc: "Белая перламутровая бумага, серебряная лента, атласный наполнитель",
-    price: "от 650 ₽/шт",
-    tag: "Новинка",
-    img: IMG_CATALOG,
-  },
-  {
-    name: "Obsidian Corporate",
-    category: "Корпоративный",
-    desc: "Матовый чёрный картон, тиснение логотипа, встроенная ложемент",
-    price: "от 1 200 ₽/шт",
-    tag: "Топ для B2B",
-    img: IMG_OPEN,
-  },
-  {
-    name: "Rose Gold Edition",
-    category: "Блогеры",
-    desc: "Розово-золотой металлик, wow-крышка, идеально для unboxing",
-    price: "от 780 ₽/шт",
-    tag: "Instagrammable",
-    img: IMG_HERO,
-  },
-  {
-    name: "Midnight Navy",
-    category: "Запуск продукции",
-    desc: "Глубокий синий с золотым тиснением, luxury-ощущение",
-    price: "от 950 ₽/шт",
-    tag: null,
-    img: IMG_CATALOG,
-  },
-  {
-    name: "Emerald Prestige",
-    category: "VIP подарки",
-    desc: "Изумрудный бархат, серебряные акценты, ручная отделка",
-    price: "от 1 800 ₽/шт",
-    tag: "Эксклюзив",
-    img: IMG_OPEN,
-  },
+  { name: "Velvet Black Box",    cat: "Премиум",          desc: "Бархатное покрытие, золотое тиснение, магнитная крышка",           price: "от 890 ₽/шт",   tag: "Бестселлер", img: IMG_HERO },
+  { name: "Crystal White",       cat: "Свадьбы / Events", desc: "Белая перламутровая бумага, серебряная лента, атласный наполнитель", price: "от 650 ₽/шт",   tag: "Новинка",    img: IMG_CATALOG },
+  { name: "Obsidian Corporate",  cat: "Корпоративный",    desc: "Матовый чёрный картон, тиснение логотипа, встроенная ложемент",      price: "от 1 200 ₽/шт", tag: "Топ B2B",    img: IMG_OPEN },
+  { name: "Rose Gold Edition",   cat: "Блогеры",          desc: "Розово-золотой металлик, wow-крышка, идеально для unboxing",         price: "от 780 ₽/шт",   tag: null,         img: IMG_HERO },
+  { name: "Midnight Navy",       cat: "Запуск продукции", desc: "Глубокий синий с золотым тиснением, luxury-ощущение",               price: "от 950 ₽/шт",   tag: null,         img: IMG_CATALOG },
+  { name: "Emerald Prestige",    cat: "VIP подарки",      desc: "Изумрудный бархат, серебряные акценты, ручная отделка",             price: "от 1 800 ₽/шт", tag: "Эксклюзив",  img: IMG_OPEN },
 ];
 
 const services = [
-  { icon: "Layers", title: "Дизайн под ключ", desc: "Разрабатываем уникальный дизайн коробки с нуля: от брифа до финального макета." },
-  { icon: "Fingerprint", title: "Именное тиснение", desc: "Горячее тиснение золотой и серебряной фольгой, UV-лак, дебоссинг логотипа." },
-  { icon: "Package", title: "Полный комплект", desc: "Коробка + наполнитель + лента + открытка + фирменная бумага для упаковки." },
-  { icon: "Truck", title: "Срочное производство", desc: "Экспресс-изготовление от 7 дней. Доставка по всей России и СНГ." },
-  { icon: "Award", title: "Контроль качества", desc: "Каждая партия проходит 3-этапный контроль. Фотоотчёт до отгрузки." },
-  { icon: "MessageSquare", title: "Персональный менеджер", desc: "Ваш менеджер ведёт заказ от брифа до доставки. Ответ в течение 1 часа." },
+  { icon: "Layers",       title: "Дизайн под ключ",       desc: "Разрабатываем уникальный дизайн с нуля: от брифа до финального макета." },
+  { icon: "Fingerprint",  title: "Именное тиснение",      desc: "Горячее тиснение золотой и серебряной фольгой, UV-лак, дебоссинг." },
+  { icon: "Package",      title: "Полный комплект",       desc: "Коробка + наполнитель + лента + открытка + фирменная бумага." },
+  { icon: "Truck",        title: "Срочное производство",  desc: "Экспресс-изготовление от 7 дней. Доставка по всей России и СНГ." },
+  { icon: "Award",        title: "Контроль качества",     desc: "Каждая партия проходит 3-этапный контроль. Фотоотчёт до отгрузки." },
+  { icon: "MessageCircle", title: "Персональный менеджер", desc: "Ведёт заказ от брифа до доставки. Ответ в течение 1 часа." },
 ];
 
 const portfolio = [
-  {
-    brand: "MIXIT",
-    category: "Бьюти-бренд",
-    result: "+340% engagement при unboxing",
-    desc: "Разработали лимитированную серию праздничных коробок для новогодней коллекции. 50 000 единиц за 21 день.",
-    metric: "50 000",
-    label: "Коробок в тираже",
-  },
-  {
-    brand: "Сбербанк Премиум",
-    category: "Корпоративный сегмент",
-    result: "NPS +28 пунктов среди VIP-клиентов",
-    desc: "Эксклюзивные подарочные наборы для топ-клиентов. Тиснение золотом, бархат, именные открытки.",
-    metric: "12 000",
-    label: "Комплектов доставлено",
-  },
-  {
-    brand: "Nastya / LIKE",
-    category: "Блогер 80M+ подписчиков",
-    result: "15M+ просмотров unboxing видео",
-    desc: "Разработали wow-упаковку для коллаборации. Магнитная крышка, золотые инициалы, конфетти внутри.",
-    metric: "15M+",
-    label: "Просмотров видео",
-  },
-  {
-    brand: "STONE ISLAND RU",
-    category: "Fashion-ритейл",
-    result: "Рост повторных покупок на 22%",
-    desc: "Сезонная упаковка для подарочных сертификатов и лимитированных дропов.",
-    metric: "22%",
-    label: "Рост продаж",
-  },
+  { brand: "MIXIT",           cat: "Бьюти-бренд",              result: "+340% engagement при unboxing",    desc: "Лимитированная новогодняя серия коробок. 50 000 единиц за 21 день.",           metric: "50 000", label: "Коробок" },
+  { brand: "Сбербанк Премиум", cat: "Корпоративный сегмент",   result: "NPS +28 пунктов среди VIP-клиентов", desc: "Эксклюзивные подарочные наборы. Тиснение золотом, бархат, именные открытки.", metric: "12 000", label: "Комплектов" },
+  { brand: "Nastya / LIKE",   cat: "Блогер 80M+ подписчиков",  result: "15M+ просмотров unboxing видео",   desc: "Wow-упаковка для коллаборации. Магнитная крышка, конфетти, золотые инициалы.", metric: "15M+",   label: "Просмотров" },
+  { brand: "STONE ISLAND RU", cat: "Fashion-ритейл",           result: "Рост повторных покупок на 22%",    desc: "Сезонная упаковка для сертификатов и лимитированных дропов.",                metric: "22%",    label: "Рост продаж" },
 ];
 
 const reviews = [
-  {
-    name: "Анастасия Р.",
-    role: "Директор по маркетингу, бьюти-бренд",
-    text: "Работаем уже 3 года. Качество стабильно высокое, сроки соблюдают всегда. Наши клиенты в восторге от упаковки — это отдельная точка контакта с брендом.",
-    stars: 5,
-  },
-  {
-    name: "Михаил К.",
-    role: "CEO, корпоративные подарки",
-    text: "Заказывали 8000 подарочных наборов для партнёров на Новый год. Результат превзошёл ожидания. Партнёры присылали фото и благодарили отдельно.",
-    stars: 5,
-  },
-  {
-    name: "Valeria M.",
-    role: "Блогер, 2.4M подписчиков",
-    text: "Упаковка для моего мерча получилась просто огонь. Подписчики сошли с ума от unboxing. Уже планирую третий заказ.",
-    stars: 5,
-  },
-  {
-    name: "Дмитрий Ш.",
-    role: "Основатель fashion-бренда",
-    text: "Наконец нашли партнёра, который понимает слово «люкс». Никаких компромиссов по качеству, чёткие сроки, проактивная коммуникация.",
-    stars: 5,
-  },
+  { name: "Анастасия Р.", role: "Директор по маркетингу, бьюти-бренд",  text: "Работаем уже 3 года. Качество стабильно высокое, сроки соблюдают всегда. Наши клиенты в восторге — упаковка стала отдельной точкой контакта с брендом." },
+  { name: "Михаил К.",    role: "CEO, корпоративные подарки",            text: "Заказывали 8000 наборов для партнёров на Новый год. Результат превзошёл ожидания. Партнёры присылали фото и благодарили отдельно." },
+  { name: "Valeria M.",   role: "Блогер, 2.4M подписчиков",             text: "Упаковка для мерча получилась просто огонь. Подписчики сошли с ума от unboxing. Уже планирую третий заказ." },
+  { name: "Дмитрий Ш.",   role: "Основатель fashion-бренда",            text: "Наконец нашли партнёра, который понимает слово «люкс». Никаких компромиссов, чёткие сроки, проактивная коммуникация." },
 ];
 
-const galleryItems = [
-  { label: "Velvet Collection", img: IMG_HERO },
-  { label: "Silver Edition", img: IMG_CATALOG },
-  { label: "Corporate Suite", img: IMG_OPEN },
-  { label: "Unboxing Series", img: IMG_HERO },
-  { label: "Wedding Luxury", img: IMG_CATALOG },
-  { label: "Limited Drop", img: IMG_OPEN },
-];
+const galleryImgs = [IMG_HERO, IMG_CATALOG, IMG_OPEN, IMG_HERO, IMG_CATALOG, IMG_OPEN];
+const galleryLabels = ["Velvet Collection", "Silver Edition", "Corporate Suite", "Unboxing Series", "Wedding Luxury", "Limited Drop"];
 
 const steps = [
-  { num: "01", title: "Бриф", desc: "Заполняете форму или звоните менеджеру. Обсуждаем цели, тираж, сроки, бюджет." },
-  { num: "02", title: "Концепция", desc: "Дизайнер готовит 2–3 варианта концепции в течение 48 часов." },
-  { num: "03", title: "Утверждение", desc: "Согласовываем макет, материалы и цветовую схему. При необходимости — физический образец." },
-  { num: "04", title: "Производство", desc: "Запускаем тираж. Вы получаете фотоотчёт с производства." },
-  { num: "05", title: "Доставка", desc: "Отгружаем партию в удобное место. Страхование груза включено." },
+  { num: "01", title: "Бриф",         desc: "Обсуждаем цели, тираж, сроки и бюджет." },
+  { num: "02", title: "Концепция",    desc: "2–3 варианта дизайна за 48 часов." },
+  { num: "03", title: "Утверждение",  desc: "Согласуем макет. Физический образец по запросу." },
+  { num: "04", title: "Производство", desc: "Запускаем тираж с фотоотчётом." },
+  { num: "05", title: "Доставка",     desc: "Отгружаем по России и СНГ. Страхование включено." },
 ];
 
 const faqs = [
-  { q: "Какой минимальный тираж?", a: "Минимальный тираж — от 50 штук для стандартных моделей. Для эксклюзивных разработок — от 100 шт. Пробные образцы доступны от 10 штук." },
-  { q: "Сколько стоит разработка дизайна?", a: "Разработка дизайна включена в стоимость при заказе от 200 шт. При меньших тиражах — от 5 000 ₽ за концепцию." },
-  { q: "Какие сроки производства?", a: "Стандартные сроки: 14–21 рабочий день. Экспресс-производство: от 7 дней (наценка 30%). Физический образец — 5 рабочих дней." },
-  { q: "Можно ли сделать упаковку под мой фирменный стиль?", a: "Да, именно в этом наша специализация. Мы работаем с брендбуком, Pantone, корпоративными шрифтами. Любой дизайн воплощаем в жизнь." },
-  { q: "Есть ли доставка в регионы и СНГ?", a: "Доставляем по всей России, Казахстану, Беларуси и другим странам СНГ. Работаем с СДЭК, Деловыми линиями и собственной логистикой." },
-  { q: "Как происходит оплата?", a: "50% предоплата при старте производства, 50% — перед отгрузкой. Работаем по договору, закрывающие документы предоставляем." },
+  { q: "Какой минимальный тираж?",                        a: "От 50 шт для стандартных моделей, от 100 шт для эксклюзива. Пробные образцы — от 10 штук." },
+  { q: "Сколько стоит разработка дизайна?",               a: "Включена в стоимость при заказе от 200 шт. При меньших тиражах — от 5 000 ₽." },
+  { q: "Какие сроки производства?",                       a: "Стандарт: 14–21 рабочий день. Экспресс: от 7 дней (наценка 30%). Образец: 5 дней." },
+  { q: "Можно ли сделать под мой фирменный стиль?",       a: "Да — работаем с брендбуком, Pantone, корпоративными шрифтами." },
+  { q: "Есть ли доставка в регионы и СНГ?",               a: "Доставляем по всей России, Казахстану, Беларуси. СДЭК, Деловые линии, своя логистика." },
+  { q: "Как происходит оплата?",                          a: "50% предоплата при старте, 50% перед отгрузкой. Работаем по договору." },
 ];
 
+const navLinks = ["Новинки", "Каталог", "Услуги", "Прайс", "Отзывы", "О компании", "Контакты"];
+
 export default function Index() {
-  const [activePromo, setActivePromo] = useState(0);
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [heroSlide, setHeroSlide]   = useState(0);
+  const [activeFaq, setActiveFaq]   = useState<number | null>(null);
+  const [menuOpen, setMenuOpen]     = useState(false);
+
+  const heroSlides = [
+    { title: "Премиальные коробки на заказ для брендов и бизнеса", sub: "Упаковка, которую запоминают", img: IMG_HERO },
+    { title: "Производство подарочной упаковки в Москве",          sub: "От идеи и 3D-визуализации до готового тиража", img: IMG_CATALOG },
+    { title: "1000+ конструкций · 5000+ проектов · от 1 штуки",   sub: "Любой тираж, любая сложность", img: IMG_OPEN },
+  ];
 
   useEffect(() => {
-    const t = setInterval(() => setActivePromo(p => (p + 1) % promos.length), 4500);
+    const t = setInterval(() => setHeroSlide(s => (s + 1) % heroSlides.length), 5000);
     return () => clearInterval(t);
   }, []);
 
   return (
-    <div className="min-h-screen bg-obsidian text-[#EDE8DF] font-body overflow-x-hidden">
+    <div className="min-h-screen bg-white text-ink font-body">
 
-      {/* NAV */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-obsidian/90 backdrop-blur-md border-b border-gold/10">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <span className="font-display text-2xl font-light tracking-[0.2em] gradient-gold-text">LUXEBOX</span>
-          <div className="hidden md:flex items-center gap-8 text-[11px] font-medium tracking-[0.15em] uppercase text-silver-light/70">
-            {["Каталог", "Услуги", "Портфолио", "Отзывы", "Галерея", "FAQ"].map(item => (
-              <a key={item} href={`#${item.toLowerCase()}`} className="hover:text-gold transition-colors duration-300">{item}</a>
-            ))}
+      {/* ── TOP BAR ── */}
+      <div className="bg-ink text-white text-center py-2 text-[11px] font-semibold tracking-[0.2em] uppercase">
+        Минимальная сумма заказа от 35 000 рублей
+      </div>
+
+      {/* ── HEADER ── */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-6">
+          {/* Logo */}
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="font-display text-2xl font-bold tracking-tight leading-none">
+              ART‑<span className="italic font-normal">DiZo</span>
+            </div>
+            <div className="hidden lg:block text-[10px] text-gray-400 leading-tight max-w-[120px]">
+              Производство подарочных<br/>коробок в Москве
+            </div>
           </div>
-          <a href="#контакты" className="hidden md:block btn-gold px-5 py-2.5 text-[11px] rounded-none">
-            Заказать
-          </a>
-          <button className="md:hidden text-gold" onClick={() => setMenuOpen(v => !v)}>
-            <Icon name={menuOpen ? "X" : "Menu"} size={22} />
+
+          {/* Contacts */}
+          <div className="hidden md:flex flex-col items-center gap-0.5">
+            <a href="tel:+74951616873" className="font-display text-xl font-semibold hover:text-warm transition-colors">+7 (495) 161-68-73</a>
+            <a href="mailto:online@art-dizo.ru" className="text-[11px] text-gray-400 hover:text-warm transition-colors">online@art-dizo.ru</a>
+          </div>
+
+          {/* Address */}
+          <div className="hidden lg:flex flex-col gap-0.5 text-[11px] text-gray-500">
+            <div className="flex items-center gap-1"><Icon name={"MapPin" as ArtIcon} size={11} className="shrink-0" /> г. Москва, ул. Шеногина 4, корп. 1</div>
+            <div className="flex items-center gap-1"><Icon name={"Clock" as ArtIcon} size={11} className="shrink-0" /> Пн – Пт: с 9:00 до 18:00</div>
+          </div>
+
+          {/* Icons */}
+          <div className="hidden md:flex items-center gap-3">
+            <button className="w-9 h-9 border border-gray-200 flex items-center justify-center hover:border-ink transition-colors">
+              <Icon name={"Search" as ArtIcon} size={15} />
+            </button>
+            <button className="w-9 h-9 border border-gray-200 flex items-center justify-center hover:border-ink transition-colors">
+              <Icon name={"User" as ArtIcon} size={15} />
+            </button>
+          </div>
+
+          <button className="md:hidden" onClick={() => setMenuOpen(v => !v)}>
+            <Icon name={(menuOpen ? "X" : "Menu") as ArtIcon} size={22} />
           </button>
         </div>
+
+        {/* NAV BAR */}
+        <nav className="bg-ink hidden md:block">
+          <div className="max-w-7xl mx-auto px-6">
+            <ul className="flex items-center">
+              {navLinks.map((link) => (
+                <li key={link}>
+                  <a
+                    href={`#${link.toLowerCase()}`}
+                    className="block px-5 py-3.5 text-white font-display font-medium text-[13px] tracking-[0.1em] uppercase hover:bg-white/10 transition-colors"
+                  >
+                    {link}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </nav>
+
+        {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden bg-charcoal border-t border-gold/10 px-6 py-4 flex flex-col gap-4 text-[12px] tracking-widest uppercase text-silver-light/70">
-            {["Каталог", "Услуги", "Портфолио", "Отзывы", "Галерея", "FAQ", "Контакты"].map(item => (
-              <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setMenuOpen(false)} className="hover:text-gold transition-colors">{item}</a>
+          <div className="md:hidden bg-ink">
+            {navLinks.map(link => (
+              <a
+                key={link}
+                href={`#${link.toLowerCase()}`}
+                onClick={() => setMenuOpen(false)}
+                className="block px-6 py-3 text-white font-display text-[13px] tracking-widest uppercase border-b border-white/10 hover:bg-white/10"
+              >
+                {link}
+              </a>
             ))}
           </div>
         )}
-      </nav>
+      </header>
 
-      {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-        <div className="absolute inset-0">
-          <img src={IMG_HERO} alt="Premium packaging" className="w-full h-full object-cover opacity-25" />
-          <div className="absolute inset-0 bg-gradient-to-b from-obsidian/70 via-obsidian/50 to-obsidian" />
-          <div className="absolute inset-0 bg-gradient-to-r from-obsidian/90 via-transparent to-obsidian/90" />
-        </div>
-        <div
-          className="absolute inset-0 opacity-[0.025]"
-          style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(201,168,76,0.5) 60px, rgba(201,168,76,0.5) 61px), repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(201,168,76,0.5) 60px, rgba(201,168,76,0.5) 61px)' }}
-        />
-        <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
-          <div className="section-label mb-6 animate-fade-up">Эксклюзивная подарочная упаковка</div>
-          <div className="gold-line w-24 mx-auto mb-8 animate-fade-up delay-100" />
-          <h1 className="font-display text-6xl md:text-8xl lg:text-[6.5rem] font-light leading-none tracking-[0.02em] mb-6 animate-fade-up delay-200">
-            Упаковка,<br />
-            <em className="not-italic italic gradient-gold-text">которую</em><br />
-            не забудут
-          </h1>
-          <p className="text-silver-light/70 font-body text-sm md:text-base tracking-wider max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-up delay-300">
-            Создаём премиальную упаковку для брендов, блогеров и корпоративных подарков.<br className="hidden md:block" />
-            Каждая коробка — произведение искусства. Под заказ. По всей России.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-up delay-400">
-            <a href="#контакты" className="btn-gold px-10 py-4 text-[11px] rounded-none">
-              Получить расчёт стоимости
-            </a>
-            <a href="#портфолио" className="btn-outline-gold px-10 py-4 rounded-none">
-              Смотреть кейсы
-            </a>
+      {/* ── HERO SLIDER ── */}
+      <section className="relative overflow-hidden" style={{ height: 480 }}>
+        {heroSlides.map((s, i) => (
+          <div
+            key={i}
+            className="absolute inset-0 transition-opacity duration-1000"
+            style={{ opacity: heroSlide === i ? 1 : 0 }}
+          >
+            <img src={s.img} alt={s.title} className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-r from-cream/95 via-cream/70 to-transparent" />
           </div>
-          <div className="flex items-center justify-center gap-10 md:gap-16 mt-16 animate-fade-up delay-500">
-            {[["500+", "Брендов доверяют"], ["3M+", "Коробок в год"], ["14 дн", "От образца до тиража"]].map(([n, l]) => (
-              <div key={n} className="text-center">
-                <div className="font-display text-3xl md:text-4xl gradient-gold-text font-light">{n}</div>
-                <div className="text-silver-light/50 text-[9px] tracking-[0.2em] uppercase mt-1">{l}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <Icon name="ChevronDown" size={20} className="text-gold/40" />
-        </div>
-      </section>
-
-      {/* PROMOS */}
-      <section id="акции" className="py-8 bg-charcoal border-y border-gold/15">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="section-label text-center mb-8">Актуальные предложения</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {promos.map((p, i) => (
-              <div
-                key={i}
-                onClick={() => setActivePromo(i)}
-                className={`luxury-card p-6 cursor-pointer transition-all duration-500 hover-gold-lift ${activePromo === i ? "ring-1 ring-gold/50 shadow-[0_0_24px_rgba(201,168,76,0.12)]" : ""}`}
-              >
-                <div className={`text-[9px] tracking-[0.25em] font-semibold mb-3 ${p.accent === "gold" ? "text-gold" : "text-silver"}`}>
-                  {p.badge}
-                </div>
-                <div className="font-display text-lg font-medium leading-snug mb-2">{p.title}</div>
-                <div className="text-[11px] text-silver-light/60 leading-relaxed mb-4">{p.desc}</div>
-                <div className={`text-[10px] font-semibold tracking-wider px-2 py-1 inline-block border ${p.accent === "gold" ? "border-gold/30 text-gold" : "border-silver/30 text-silver"}`}>
-                  {p.tag}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CATALOG */}
-      <section id="каталог" className="py-24">
-        <div className="max-w-7xl mx-auto px-6">
-          <AnimatedSection>
-            <div className="text-center mb-16">
-              <div className="section-label mb-4">Каталог</div>
-              <h2 className="font-display text-5xl md:text-6xl font-light mb-4">
-                Коллекции <em className="not-italic italic gradient-gold-text">упаковки</em>
-              </h2>
-              <div className="gold-line w-16 mx-auto mt-6" />
+        ))}
+        <div className="relative z-10 h-full flex items-center">
+          <div className="max-w-7xl mx-auto px-8 md:px-16 w-full">
+            <div className="max-w-xl">
+              <h1 className="font-display font-bold text-4xl md:text-5xl leading-tight text-ink uppercase mb-4 anim-fade-up">
+                {heroSlides[heroSlide].title}
+              </h1>
+              <p className="text-[13px] text-gray-600 mb-3 anim-fade-up d200">{heroSlides[heroSlide].sub}</p>
+              <p className="text-[13px] text-gray-600 mb-3 anim-fade-up d300">От идеи и 3D-визуализации до готового тиража</p>
+              <p className="text-[13px] text-gray-600 mb-8 anim-fade-up d400">1000+ конструкций · 5000+ проектов · от 1 штуки</p>
+              <a href="#контакты" className="btn-primary anim-fade-up d500">Рассчитать проект</a>
             </div>
-          </AnimatedSection>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-gold/8">
+          </div>
+        </div>
+        {/* Dots */}
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+          {heroSlides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setHeroSlide(i)}
+              className={`w-2.5 h-2.5 rounded-full transition-all ${heroSlide === i ? "bg-ink scale-110" : "bg-ink/30"}`}
+            />
+          ))}
+        </div>
+        {/* Arrows */}
+        <button
+          onClick={() => setHeroSlide(s => (s - 1 + heroSlides.length) % heroSlides.length)}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/80 flex items-center justify-center hover:bg-white transition-colors"
+        >
+          <Icon name={"ChevronLeft" as ArtIcon} size={18} />
+        </button>
+        <button
+          onClick={() => setHeroSlide(s => (s + 1) % heroSlides.length)}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/80 flex items-center justify-center hover:bg-white transition-colors"
+        >
+          <Icon name={"ChevronRight" as ArtIcon} size={18} />
+        </button>
+      </section>
+
+      {/* ── PROMOS ── */}
+      <section id="новинки" className="py-12 bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-6">
+          <Reveal>
+            <h2 className="font-display font-bold text-2xl md:text-3xl text-center uppercase mb-2 tracking-wide">Акции и специальные предложения</h2>
+            <div className="w-12 h-0.5 bg-warm mx-auto mb-10" />
+          </Reveal>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {promos.map((p, i) => (
+              <Reveal key={i} delay={i * 80}>
+                <div className="bg-cream border border-gray-200 p-6 card-hover h-full flex flex-col">
+                  <span className="text-[9px] font-bold tracking-[0.25em] uppercase text-warm mb-3 block">{p.badge}</span>
+                  <h3 className="font-display font-semibold text-lg uppercase leading-snug mb-2">{p.title}</h3>
+                  <p className="text-[12px] text-gray-500 leading-relaxed flex-1 mb-4">{p.desc}</p>
+                  <div className="text-[11px] font-semibold text-ink border border-ink px-3 py-1.5 inline-block self-start">
+                    {p.tag}
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CATALOG ── */}
+      <section id="каталог" className="py-16 bg-[#F9F7F4]">
+        <div className="max-w-7xl mx-auto px-6">
+          <Reveal>
+            <h2 className="font-display font-bold text-2xl md:text-3xl uppercase tracking-wide text-center mb-2">Производство подарочных коробок в Москве</h2>
+            <div className="w-12 h-0.5 bg-warm mx-auto mb-12" />
+          </Reveal>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {catalog.map((item, i) => (
-              <AnimatedSection key={i}>
-                <div className="luxury-card p-8 shimmer hover-gold-lift h-full flex flex-col bg-charcoal">
-                  <div className="flex items-start justify-between mb-4">
-                    <span className="text-[9px] text-silver-light/50 tracking-[0.2em] uppercase">{item.category}</span>
+              <Reveal key={i} delay={i * 70}>
+                <div className="bg-white border border-gray-200 card-hover group overflow-hidden">
+                  <div className="relative h-52 overflow-hidden">
+                    <img
+                      src={item.img}
+                      alt={item.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
                     {item.tag && (
-                      <span className="text-[9px] text-gold border border-gold/30 px-2 py-0.5 tracking-wider">{item.tag}</span>
+                      <div className="absolute top-3 left-3 bg-ink text-white text-[10px] font-bold tracking-wider uppercase px-2.5 py-1">
+                        {item.tag}
+                      </div>
                     )}
                   </div>
-                  <div className="w-full h-44 mb-6 relative overflow-hidden">
-                    <img src={item.img} alt={item.name} className="w-full h-full object-cover opacity-60 hover:opacity-80 transition-opacity duration-500" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/20 to-transparent" />
-                    <div className="absolute bottom-3 left-3 font-display text-xl italic text-gold-light">{item.name}</div>
-                  </div>
-                  <p className="text-silver-light/65 text-[12px] leading-relaxed flex-1 mb-5">{item.desc}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="font-display text-2xl text-gold">{item.price}</span>
-                    <button className="btn-outline-gold px-4 py-2 text-[10px] rounded-none">Подробнее</button>
+                  <div className="p-5">
+                    <div className="text-[10px] text-warm font-semibold tracking-wider uppercase mb-1">{item.cat}</div>
+                    <h3 className="font-display font-semibold text-xl uppercase mb-2">{item.name}</h3>
+                    <p className="text-[12px] text-gray-500 leading-relaxed mb-4">{item.desc}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="font-display font-bold text-xl">{item.price}</span>
+                      <button className="btn-outline text-[10px] px-4 py-2">Подробнее</button>
+                    </div>
                   </div>
                 </div>
-              </AnimatedSection>
+              </Reveal>
             ))}
           </div>
-          <AnimatedSection>
-            <div className="text-center mt-12">
-              <button className="btn-gold px-12 py-4 rounded-none">Запросить полный каталог</button>
+          <Reveal>
+            <div className="text-center mt-10">
+              <button className="btn-primary px-12">Смотреть весь каталог</button>
             </div>
-          </AnimatedSection>
+          </Reveal>
         </div>
       </section>
 
-      {/* SERVICES */}
-      <section id="услуги" className="py-24 bg-charcoal">
+      {/* ── SERVICES ── */}
+      <section id="услуги" className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <AnimatedSection>
-            <div className="text-center mb-16">
-              <div className="section-label mb-4">Услуги</div>
-              <h2 className="font-display text-5xl md:text-6xl font-light mb-4">
-                Всё включено<br /><em className="not-italic italic gradient-gold-text">в один заказ</em>
-              </h2>
-              <div className="gold-line w-16 mx-auto mt-6" />
-            </div>
-          </AnimatedSection>
+          <Reveal>
+            <h2 className="font-display font-bold text-2xl md:text-3xl uppercase tracking-wide text-center mb-2">Наши услуги</h2>
+            <div className="w-12 h-0.5 bg-warm mx-auto mb-12" />
+          </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {services.map((s, i) => (
-              <AnimatedSection key={i}>
-                <div className="luxury-card p-8 hover-gold-lift group h-full bg-obsidian">
-                  <div className="w-12 h-12 flex items-center justify-center border border-gold/20 mb-6 group-hover:border-gold/60 transition-colors duration-300">
-                    <Icon name={s.icon as LuxeIcon} size={20} className="text-gold" />
+              <Reveal key={i} delay={i * 70}>
+                <div className="flex gap-4 p-6 bg-[#F9F7F4] border border-gray-200 card-hover">
+                  <div className="w-12 h-12 bg-ink flex items-center justify-center shrink-0">
+                    <Icon name={s.icon as ArtIcon} size={20} className="text-white" />
                   </div>
-                  <h3 className="font-display text-2xl font-medium mb-3">{s.title}</h3>
-                  <p className="text-silver-light/60 text-[12px] leading-relaxed">{s.desc}</p>
+                  <div>
+                    <h3 className="font-display font-semibold text-base uppercase mb-1.5">{s.title}</h3>
+                    <p className="text-[12px] text-gray-500 leading-relaxed">{s.desc}</p>
+                  </div>
                 </div>
-              </AnimatedSection>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* PORTFOLIO */}
-      <section id="портфолио" className="py-24">
+      {/* ── PORTFOLIO ── */}
+      <section id="портфолио" className="py-16 bg-ink text-white">
         <div className="max-w-7xl mx-auto px-6">
-          <AnimatedSection>
-            <div className="text-center mb-16">
-              <div className="section-label mb-4">Портфолио</div>
-              <h2 className="font-display text-5xl md:text-6xl font-light mb-4">
-                Кейсы <em className="not-italic italic gradient-gold-text">с результатами</em>
-              </h2>
-              <div className="gold-line w-16 mx-auto mt-6" />
-            </div>
-          </AnimatedSection>
+          <Reveal>
+            <h2 className="font-display font-bold text-2xl md:text-3xl uppercase tracking-wide text-center mb-2 text-white">Кейсы с реальными результатами</h2>
+            <div className="w-12 h-0.5 bg-warm mx-auto mb-12" />
+          </Reveal>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {portfolio.map((p, i) => (
-              <AnimatedSection key={i}>
-                <div className="luxury-card p-10 shimmer hover-gold-lift relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-28 h-28 border-l border-b border-gold/8" />
-                  <div className="flex items-start gap-6">
-                    <div className="shrink-0 min-w-[80px]">
-                      <div className="font-display text-3xl font-light gradient-gold-text leading-tight">{p.metric}</div>
-                      <div className="text-[9px] text-silver-light/50 tracking-widest uppercase mt-1 leading-tight">{p.label}</div>
+              <Reveal key={i} delay={i * 80}>
+                <div className="border border-white/15 bg-white/5 p-8 hover:bg-white/10 transition-colors card-hover">
+                  <div className="flex items-start gap-6 mb-4">
+                    <div className="shrink-0">
+                      <div className="font-display text-4xl font-bold text-warm leading-none">{p.metric}</div>
+                      <div className="text-[9px] text-white/50 tracking-widest uppercase mt-1">{p.label}</div>
                     </div>
-                    <div className="gold-line-v h-16 self-center shrink-0 opacity-40" />
+                    <div className="w-px bg-white/15 self-stretch shrink-0" />
                     <div>
-                      <div className="text-[9px] text-silver-light/50 tracking-widest uppercase mb-1">{p.category}</div>
-                      <div className="font-display text-2xl font-semibold mb-2">{p.brand}</div>
-                      <div className="text-gold text-[11px] font-semibold tracking-wide mb-3">{p.result}</div>
-                      <p className="text-silver-light/65 text-[12px] leading-relaxed">{p.desc}</p>
+                      <div className="text-[9px] text-white/40 tracking-widest uppercase mb-1">{p.cat}</div>
+                      <div className="font-display text-xl font-semibold uppercase mb-1">{p.brand}</div>
+                      <div className="text-warm text-[11px] font-semibold">{p.result}</div>
                     </div>
                   </div>
+                  <p className="text-[12px] text-white/60 leading-relaxed border-t border-white/10 pt-4">{p.desc}</p>
                 </div>
-              </AnimatedSection>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* REVIEWS */}
-      <section id="отзывы" className="py-24 bg-charcoal">
+      {/* ── REVIEWS ── */}
+      <section id="отзывы" className="py-16 bg-[#F9F7F4]">
         <div className="max-w-7xl mx-auto px-6">
-          <AnimatedSection>
-            <div className="text-center mb-16">
-              <div className="section-label mb-4">Отзывы</div>
-              <h2 className="font-display text-5xl md:text-6xl font-light mb-4">
-                Нам <em className="not-italic italic gradient-gold-text">доверяют</em>
-              </h2>
-              <div className="gold-line w-16 mx-auto mt-6" />
-            </div>
-          </AnimatedSection>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <Reveal>
+            <h2 className="font-display font-bold text-2xl md:text-3xl uppercase tracking-wide text-center mb-2">Отзывы клиентов</h2>
+            <div className="w-12 h-0.5 bg-warm mx-auto mb-12" />
+          </Reveal>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {reviews.map((r, i) => (
-              <AnimatedSection key={i}>
-                <div className="luxury-card p-8 hover-gold-lift bg-obsidian">
-                  <div className="flex items-center gap-0.5 mb-5">
-                    {Array.from({ length: r.stars }).map((_, j) => (
-                      <span key={j} className="text-gold text-lg">★</span>
+              <Reveal key={i} delay={i * 80}>
+                <div className="bg-white border border-gray-200 p-7 card-hover">
+                  <div className="flex gap-0.5 mb-4">
+                    {Array.from({ length: 5 }).map((_, j) => (
+                      <span key={j} className="text-warm text-base">★</span>
                     ))}
                   </div>
-                  <blockquote className="font-display text-xl italic text-[#EDE8DF]/85 leading-relaxed mb-6">
-                    «{r.text}»
-                  </blockquote>
-                  <div className="flex items-center gap-3 pt-4 border-t border-gold/10">
-                    <div className="w-10 h-10 gradient-gold flex items-center justify-center text-obsidian font-bold text-sm shrink-0">
+                  <p className="text-[13px] text-gray-600 leading-relaxed mb-5 italic">«{r.text}»</p>
+                  <div className="flex items-center gap-3 border-t border-gray-100 pt-4">
+                    <div className="w-10 h-10 bg-ink text-white font-display font-bold flex items-center justify-center text-sm shrink-0">
                       {r.name[0]}
                     </div>
                     <div>
-                      <div className="text-[13px] font-semibold">{r.name}</div>
-                      <div className="text-silver-light/50 text-[11px] mt-0.5">{r.role}</div>
+                      <div className="font-semibold text-[13px]">{r.name}</div>
+                      <div className="text-[11px] text-gray-400 mt-0.5">{r.role}</div>
                     </div>
                   </div>
                 </div>
-              </AnimatedSection>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* GALLERY */}
-      <section id="галерея" className="py-24">
+      {/* ── GALLERY ── */}
+      <section id="галерея" className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <AnimatedSection>
-            <div className="text-center mb-16">
-              <div className="section-label mb-4">Галерея</div>
-              <h2 className="font-display text-5xl md:text-6xl font-light mb-4">
-                <em className="not-italic italic gradient-gold-text">Визуальная</em> эстетика
-              </h2>
-              <div className="gold-line w-16 mx-auto mt-6" />
-            </div>
-          </AnimatedSection>
+          <Reveal>
+            <h2 className="font-display font-bold text-2xl md:text-3xl uppercase tracking-wide text-center mb-2">Галерея работ</h2>
+            <div className="w-12 h-0.5 bg-warm mx-auto mb-12" />
+          </Reveal>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {galleryItems.map((g, i) => (
-              <AnimatedSection key={i}>
-                <div className="aspect-square border border-gold/10 flex items-end p-4 hover-gold-lift cursor-pointer group relative overflow-hidden">
+            {galleryImgs.map((img, i) => (
+              <Reveal key={i} delay={i * 60}>
+                <div className="relative aspect-square overflow-hidden group cursor-pointer">
                   <img
-                    src={g.img}
-                    alt={g.label}
-                    className="absolute inset-0 w-full h-full object-cover opacity-45 group-hover:opacity-65 group-hover:scale-105 transition-all duration-700"
+                    src={img}
+                    alt={galleryLabels[i]}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-obsidian/85 to-transparent" />
-                  <span className="relative font-display text-base italic text-gold-light/80 group-hover:text-gold-light transition-colors duration-300">{g.label}</span>
+                  <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/40 transition-all duration-400 flex items-end p-4">
+                    <span className="text-white font-display font-semibold uppercase text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      {galleryLabels[i]}
+                    </span>
+                  </div>
                 </div>
-              </AnimatedSection>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* PROCESS */}
-      <section id="процесс" className="py-24 bg-charcoal">
+      {/* ── PROCESS ── */}
+      <section id="процесс" className="py-16 bg-cream">
         <div className="max-w-7xl mx-auto px-6">
-          <AnimatedSection>
-            <div className="text-center mb-16">
-              <div className="section-label mb-4">Процесс</div>
-              <h2 className="font-display text-5xl md:text-6xl font-light mb-4">
-                От идеи до <em className="not-italic italic gradient-gold-text">доставки</em>
-              </h2>
-              <div className="gold-line w-16 mx-auto mt-6" />
-            </div>
-          </AnimatedSection>
+          <Reveal>
+            <h2 className="font-display font-bold text-2xl md:text-3xl uppercase tracking-wide text-center mb-2">Как мы работаем</h2>
+            <div className="w-12 h-0.5 bg-warm mx-auto mb-12" />
+          </Reveal>
           <div className="relative">
-            <div className="hidden md:block absolute top-12 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/25 to-transparent" />
+            <div className="hidden md:block absolute top-10 left-0 right-0 h-px bg-gray-300" />
             <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
               {steps.map((s, i) => (
-                <AnimatedSection key={i}>
+                <Reveal key={i} delay={i * 80}>
                   <div className="text-center relative">
-                    <div className="w-24 h-24 mx-auto border border-gold/25 flex items-center justify-center mb-6 bg-charcoal relative z-10">
-                      <span className="font-display text-3xl gradient-gold-text font-light">{s.num}</span>
+                    <div className="w-20 h-20 mx-auto bg-ink text-white font-display font-bold text-2xl flex items-center justify-center mb-5 relative z-10">
+                      {s.num}
                     </div>
-                    <h3 className="font-display text-xl font-medium mb-3">{s.title}</h3>
-                    <p className="text-silver-light/60 text-[11px] leading-relaxed">{s.desc}</p>
+                    <h3 className="font-display font-semibold text-base uppercase mb-2">{s.title}</h3>
+                    <p className="text-[11px] text-gray-500 leading-relaxed">{s.desc}</p>
                   </div>
-                </AnimatedSection>
+                </Reveal>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section id="faq" className="py-24">
+      {/* ── FAQ ── */}
+      <section id="faq" className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-6">
-          <AnimatedSection>
-            <div className="text-center mb-16">
-              <div className="section-label mb-4">FAQ</div>
-              <h2 className="font-display text-5xl md:text-6xl font-light mb-4">
-                Часто задаваемые <em className="not-italic italic gradient-gold-text">вопросы</em>
-              </h2>
-              <div className="gold-line w-16 mx-auto mt-6" />
-            </div>
-          </AnimatedSection>
-          <div className="space-y-2">
+          <Reveal>
+            <h2 className="font-display font-bold text-2xl md:text-3xl uppercase tracking-wide text-center mb-2">Часто задаваемые вопросы</h2>
+            <div className="w-12 h-0.5 bg-warm mx-auto mb-12" />
+          </Reveal>
+          <div className="divide-y divide-gray-200 border border-gray-200">
             {faqs.map((f, i) => (
-              <AnimatedSection key={i}>
-                <div className="luxury-card overflow-hidden">
+              <Reveal key={i}>
+                <div>
                   <button
-                    className="w-full flex items-center justify-between p-6 text-left hover:bg-charcoal-mid/40 transition-colors"
+                    className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-gray-50 transition-colors"
                     onClick={() => setActiveFaq(activeFaq === i ? null : i)}
                   >
-                    <span className="font-display text-xl font-medium pr-6">{f.q}</span>
+                    <span className="font-display font-semibold text-base uppercase tracking-wide pr-6">{f.q}</span>
                     <Icon
-                      name={activeFaq === i ? "Minus" : "Plus"}
+                      name={(activeFaq === i ? "Minus" : "Plus") as ArtIcon}
                       size={16}
-                      className={`shrink-0 transition-colors ${activeFaq === i ? "text-gold" : "text-silver-light/40"}`}
+                      className={`shrink-0 transition-colors ${activeFaq === i ? "text-warm" : "text-gray-400"}`}
                     />
                   </button>
                   {activeFaq === i && (
-                    <div className="px-6 pb-6 text-silver-light/70 text-[13px] leading-relaxed border-t border-gold/10 pt-4">
+                    <div className="px-6 pb-5 text-[13px] text-gray-500 leading-relaxed bg-[#F9F7F4]">
                       {f.a}
                     </div>
                   )}
                 </div>
-              </AnimatedSection>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CONTACT */}
-      <section id="контакты" className="py-24 bg-charcoal relative overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-[0.06]"
-          style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201,168,76,0.5) 0%, transparent 70%)' }}
-        />
-        <div className="max-w-3xl mx-auto px-6 relative z-10">
-          <AnimatedSection>
-            <div className="text-center mb-12">
-              <div className="section-label mb-4">Контакты</div>
-              <h2 className="font-display text-5xl md:text-6xl font-light mb-4">
-                Начнём <em className="not-italic italic gradient-gold-text">создавать?</em>
-              </h2>
-              <p className="text-silver-light/60 text-sm tracking-wider">
-                Оставьте заявку — менеджер свяжется в течение 1 часа
-              </p>
-              <div className="gold-line w-16 mx-auto mt-6" />
-            </div>
-          </AnimatedSection>
-          <AnimatedSection>
-            <div className="luxury-card p-10 bg-obsidian">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-                {[
-                  { label: "Ваше имя", placeholder: "Александр" },
-                  { label: "Телефон / Telegram", placeholder: "+7 (___) ___-__-__" },
-                  { label: "Бренд / Компания", placeholder: "Название компании" },
-                  { label: "Тираж (прим.)", placeholder: "от 100 штук" },
-                ].map(field => (
-                  <div key={field.label}>
-                    <label className="text-[10px] text-silver-light/50 tracking-[0.2em] uppercase block mb-2">{field.label}</label>
-                    <input
-                      className="w-full bg-charcoal border border-gold/15 px-4 py-3 text-[13px] text-[#EDE8DF] placeholder-silver-light/20 focus:outline-none focus:border-gold/50 transition-colors"
-                      placeholder={field.placeholder}
+      {/* ── CONTACT ── */}
+      <section id="контакты" className="py-16 bg-[#F9F7F4]">
+        <div className="max-w-5xl mx-auto px-6">
+          <Reveal>
+            <h2 className="font-display font-bold text-2xl md:text-3xl uppercase tracking-wide text-center mb-2">Рассчитать стоимость заказа</h2>
+            <div className="w-12 h-0.5 bg-warm mx-auto mb-12" />
+          </Reveal>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+            <Reveal>
+              <div className="bg-white border border-gray-200 p-8">
+                <div className="grid grid-cols-1 gap-4 mb-4">
+                  {[
+                    { label: "Ваше имя",          ph: "Александр" },
+                    { label: "Телефон / Telegram", ph: "+7 (___) ___-__-__" },
+                    { label: "Компания / Бренд",   ph: "Название компании" },
+                    { label: "Тираж (прим.)",       ph: "от 100 штук" },
+                  ].map(f => (
+                    <div key={f.label}>
+                      <label className="text-[10px] font-semibold tracking-[0.18em] uppercase text-gray-500 block mb-1.5">{f.label}</label>
+                      <input
+                        className="w-full border border-gray-200 bg-[#F9F7F4] px-4 py-3 text-[13px] text-ink placeholder-gray-300 focus:outline-none focus:border-ink transition-colors"
+                        placeholder={f.ph}
+                      />
+                    </div>
+                  ))}
+                  <div>
+                    <label className="text-[10px] font-semibold tracking-[0.18em] uppercase text-gray-500 block mb-1.5">Задача / Детали</label>
+                    <textarea
+                      className="w-full border border-gray-200 bg-[#F9F7F4] px-4 py-3 text-[13px] text-ink placeholder-gray-300 focus:outline-none focus:border-ink transition-colors resize-none h-24"
+                      placeholder="Опишите тип упаковки, сроки, пожелания..."
                     />
                   </div>
-                ))}
-              </div>
-              <div className="mb-6">
-                <label className="text-[10px] text-silver-light/50 tracking-[0.2em] uppercase block mb-2">Задача / Детали</label>
-                <textarea
-                  className="w-full bg-charcoal border border-gold/15 px-4 py-3 text-[13px] text-[#EDE8DF] placeholder-silver-light/20 focus:outline-none focus:border-gold/50 transition-colors resize-none h-24"
-                  placeholder="Опишите вашу задачу, тип упаковки, сроки..."
-                />
-              </div>
-              <button className="btn-gold w-full py-4 text-[12px] rounded-none">
-                Получить расчёт стоимости
-              </button>
-              <p className="text-center text-silver-light/30 text-[10px] tracking-wider mt-4">
-                Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
-              </p>
-            </div>
-          </AnimatedSection>
-          <AnimatedSection>
-            <div className="flex flex-col md:flex-row justify-center items-center gap-8 mt-12">
-              {[
-                { icon: "Phone", label: "+7 (800) 000-00-00", sub: "Бесплатно по России" },
-                { icon: "MessageCircle", label: "@luxebox_official", sub: "Telegram / WhatsApp" },
-                { icon: "Mail", label: "hello@luxebox.ru", sub: "Ответ за 1 час" },
-              ].map((c) => (
-                <div key={c.label} className="flex items-center gap-3">
-                  <Icon name={c.icon as LuxeIcon} size={16} className="text-gold shrink-0" />
-                  <div>
-                    <div className="text-[13px] text-[#EDE8DF]">{c.label}</div>
-                    <div className="text-[10px] text-silver-light/40 tracking-wider mt-0.5">{c.sub}</div>
-                  </div>
                 </div>
-              ))}
-            </div>
-          </AnimatedSection>
+                <button className="btn-primary w-full">Отправить заявку</button>
+                <p className="text-center text-[10px] text-gray-400 mt-3 tracking-wide">
+                  Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
+                </p>
+              </div>
+            </Reveal>
+            <Reveal delay={150}>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-display font-semibold text-lg uppercase mb-4">Контактная информация</h3>
+                  {[
+                    { icon: "Phone" as ArtIcon,          text: "+7 (495) 161-68-73",   sub: "Бесплатно по России" },
+                    { icon: "Mail" as ArtIcon,           text: "online@art-dizo.ru",   sub: "Ответ за 1 час" },
+                    { icon: "MessageCircle" as ArtIcon,  text: "@artdizo_official",    sub: "Telegram / WhatsApp" },
+                    { icon: "MapPin" as ArtIcon,         text: "г. Москва, ул. Шеногина 4, корп. 1, стр. 1", sub: "" },
+                    { icon: "Clock" as ArtIcon,          text: "Пн – Пт: 9:00 – 18:00", sub: "" },
+                  ].map(c => (
+                    <div key={c.text} className="flex items-start gap-3 py-3 border-b border-gray-200">
+                      <div className="w-8 h-8 bg-ink flex items-center justify-center shrink-0 mt-0.5">
+                        <Icon name={c.icon} size={14} className="text-white" />
+                      </div>
+                      <div>
+                        <div className="text-[13px] font-medium">{c.text}</div>
+                        {c.sub && <div className="text-[11px] text-gray-400 mt-0.5">{c.sub}</div>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="bg-ink text-white p-6">
+                  <div className="font-display font-bold text-lg uppercase mb-2">Минимальный заказ</div>
+                  <div className="text-3xl font-display font-bold text-warm mb-1">35 000 ₽</div>
+                  <p className="text-[12px] text-white/60">Включает разработку дизайна при тираже от 200 шт.</p>
+                </div>
+              </div>
+            </Reveal>
+          </div>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="py-8 border-t border-gold/10 bg-obsidian">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <span className="font-display text-xl tracking-[0.2em] gradient-gold-text">LUXEBOX</span>
-          <span className="text-silver-light/30 text-[11px] tracking-wider">© 2024 LUXEBOX. Эксклюзивная упаковка под заказ.</span>
-          <div className="flex gap-6 text-[11px] text-silver-light/30 tracking-wider">
-            <a href="#" className="hover:text-gold transition-colors">Политика конфиденциальности</a>
-            <a href="#" className="hover:text-gold transition-colors">Договор оферты</a>
+      {/* ── FOOTER ── */}
+      <footer className="bg-ink text-white py-10">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <div className="font-display text-xl font-bold tracking-tight mb-1">ART‑<span className="italic font-normal">DiZo</span></div>
+              <div className="text-[11px] text-white/40">Производство подарочных коробок в Москве</div>
+            </div>
+            <div className="text-[11px] text-white/40 text-center">© 2024 ART-DiZo. Производство упаковки на заказ.</div>
+            <div className="flex gap-5 text-[11px] text-white/40">
+              <a href="#" className="hover:text-white transition-colors">Политика конфиденциальности</a>
+              <a href="#" className="hover:text-white transition-colors">Оферта</a>
+            </div>
           </div>
         </div>
       </footer>
+
+      {/* ── FLOATING CONTACTS ── */}
+      <div className="fixed bottom-6 right-5 z-50 flex flex-col gap-2">
+        <a href="https://t.me/artdizo" className="w-12 h-12 bg-[#26A5E4] flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform">
+          <Icon name={"MessageCircle" as ArtIcon} size={20} />
+        </a>
+        <a href="tel:+74951616873" className="w-12 h-12 bg-[#25D366] flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform">
+          <Icon name={"Phone" as ArtIcon} size={20} />
+        </a>
+      </div>
 
     </div>
   );
