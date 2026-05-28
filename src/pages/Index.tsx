@@ -163,11 +163,11 @@ const reviews = [
 const galleryImgs = [IMG_HERO, IMG_CATALOG, IMG_OPEN, IMG_HERO, IMG_CATALOG, IMG_OPEN];
 
 const steps = [
-  { num: "01", title: "Бриф",         desc: "Обсуждаем цели, тираж, сроки и бюджет.",            img: IMG_HERO },
-  { num: "02", title: "Концепция",    desc: "2–3 варианта дизайна за 48 часов.",                  img: IMG_CATALOG },
-  { num: "03", title: "Утверждение",  desc: "Согласуем макет. Физический образец по запросу.",    img: IMG_OPEN },
-  { num: "04", title: "Производство", desc: "Запускаем тираж с фотоотчётом.",                     img: IMG_HERO },
-  { num: "05", title: "Доставка",     desc: "Отгружаем по России и СНГ. Страхование включено.",   img: IMG_CATALOG },
+  { num: "01", title: "Бриф",         desc: "Обсуждаем цели, тираж, сроки и бюджет.",            img: "https://cdn.poehali.dev/projects/cd883386-6402-4459-8df4-61b06ba8676e/files/1a489828-1283-4c58-864d-ff3e655d4e87.jpg" },
+  { num: "02", title: "Концепция",    desc: "2–3 варианта дизайна за 48 часов.",                  img: "https://cdn.poehali.dev/projects/cd883386-6402-4459-8df4-61b06ba8676e/files/6136e80f-28ee-4bc5-8cc9-dae47429ab5d.jpg" },
+  { num: "03", title: "Утверждение",  desc: "Согласуем макет. Физический образец по запросу.",    img: "https://cdn.poehali.dev/projects/cd883386-6402-4459-8df4-61b06ba8676e/files/36b41cae-5d13-45f4-818e-4e215c613b42.jpg" },
+  { num: "04", title: "Производство", desc: "Запускаем тираж с фотоотчётом.",                     img: "https://cdn.poehali.dev/projects/cd883386-6402-4459-8df4-61b06ba8676e/files/6b75a0c8-39db-4239-bcfc-e74692d52fb9.jpg" },
+  { num: "05", title: "Доставка",     desc: "Отгружаем по России и СНГ. Страхование включено.",   img: "https://cdn.poehali.dev/projects/cd883386-6402-4459-8df4-61b06ba8676e/files/d6d04088-8d9b-42d1-a325-ad9feaa8165a.jpg" },
 ];
 
 const faqs = [
@@ -913,18 +913,16 @@ export default function Index() {
                     alt={s.title}
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  {/* Dark gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
-                  {/* Number top-right */}
-                  <div className="absolute top-4 right-4 text-white/70 font-display font-bold text-lg leading-none">
+                  {/* Number — серая подложка top-right */}
+                  <div className="absolute top-3 right-3 bg-gray-800/75 backdrop-blur-sm text-white font-display font-bold text-sm px-2.5 py-1 rounded">
                     {s.num}
                   </div>
-                  {/* Text bottom */}
-                  <div className="absolute bottom-0 left-0 right-0 p-5">
-                    <h3 className="font-display font-bold text-white text-base uppercase leading-snug mb-2">
+                  {/* Text — серая подложка снизу */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gray-800/80 backdrop-blur-sm px-5 py-4">
+                    <h3 className="font-display font-bold text-white text-sm uppercase leading-snug mb-1.5">
                       {s.title}
                     </h3>
-                    <p className="text-white/75 text-[12px] leading-relaxed">{s.desc}</p>
+                    <p className="text-gray-200 text-[11px] leading-relaxed">{s.desc}</p>
                   </div>
                 </div>
               </Reveal>
