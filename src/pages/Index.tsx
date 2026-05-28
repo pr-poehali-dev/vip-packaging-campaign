@@ -913,16 +913,16 @@ export default function Index() {
                     alt={s.title}
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  {/* Number — серая подложка top-right */}
-                  <div className="absolute top-3 right-3 bg-gray-800/75 backdrop-blur-sm text-white font-display font-bold text-sm px-2.5 py-1 rounded">
+                  {/* Number — подложка top-right */}
+                  <div className="absolute top-3 right-3 bg-black/40 backdrop-blur-sm text-white font-display font-bold text-sm px-2.5 py-1 rounded">
                     {s.num}
                   </div>
-                  {/* Text — серая подложка снизу */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gray-800/80 backdrop-blur-sm px-5 py-4">
+                  {/* Text — подложка снизу, фиксированная высота */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-sm px-5 py-4" style={{ minHeight: 90 }}>
                     <h3 className="font-display font-bold text-white text-sm uppercase leading-snug mb-1.5">
                       {s.title}
                     </h3>
-                    <p className="text-gray-200 text-[11px] leading-relaxed">{s.desc}</p>
+                    <p className="text-white/85 text-[11px] leading-relaxed">{s.desc}</p>
                   </div>
                 </div>
               </Reveal>
