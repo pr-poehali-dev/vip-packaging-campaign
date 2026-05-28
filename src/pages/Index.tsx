@@ -1016,10 +1016,15 @@ export default function Index() {
                     />
                   </div>
                 </div>
+                <label className="flex items-start gap-2.5 cursor-pointer mb-4">
+                  <input type="checkbox" className="mt-0.5 shrink-0 accent-ink w-4 h-4" />
+                  <span className="text-[11px] text-gray-500 leading-relaxed">
+                    Я согласен(а) на{" "}
+                    <a href="#" className="underline hover:text-ink transition-colors">обработку персональных данных</a>{" "}
+                    в соответствии с политикой конфиденциальности
+                  </span>
+                </label>
                 <button className="btn-primary w-full">Отправить заявку</button>
-                <p className="text-center text-[10px] text-gray-400 mt-3 tracking-wide">
-                  Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
-                </p>
               </div>
             </Reveal>
             <Reveal delay={150}>
