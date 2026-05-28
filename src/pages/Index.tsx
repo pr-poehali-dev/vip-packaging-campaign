@@ -163,11 +163,11 @@ const reviews = [
 const galleryImgs = [IMG_HERO, IMG_CATALOG, IMG_OPEN, IMG_HERO, IMG_CATALOG, IMG_OPEN];
 
 const steps = [
-  { num: "01", title: "Бриф",         desc: "Обсуждаем цели, тираж, сроки и бюджет." },
-  { num: "02", title: "Концепция",    desc: "2–3 варианта дизайна за 48 часов." },
-  { num: "03", title: "Утверждение",  desc: "Согласуем макет. Физический образец по запросу." },
-  { num: "04", title: "Производство", desc: "Запускаем тираж с фотоотчётом." },
-  { num: "05", title: "Доставка",     desc: "Отгружаем по России и СНГ. Страхование включено." },
+  { num: "01", title: "Бриф",         desc: "Обсуждаем цели, тираж, сроки и бюджет.",            img: IMG_HERO },
+  { num: "02", title: "Концепция",    desc: "2–3 варианта дизайна за 48 часов.",                  img: IMG_CATALOG },
+  { num: "03", title: "Утверждение",  desc: "Согласуем макет. Физический образец по запросу.",    img: IMG_OPEN },
+  { num: "04", title: "Производство", desc: "Запускаем тираж с фотоотчётом.",                     img: IMG_HERO },
+  { num: "05", title: "Доставка",     desc: "Отгружаем по России и СНГ. Страхование включено.",   img: IMG_CATALOG },
 ];
 
 const faqs = [
@@ -903,21 +903,32 @@ export default function Index() {
             <h2 className="font-display font-bold text-2xl md:text-3xl uppercase tracking-wide text-center mb-2">Как мы работаем</h2>
             <div className="w-12 h-0.5 bg-warm mx-auto mb-12" />
           </Reveal>
-          <div className="relative">
-            <div className="hidden md:block absolute top-10 left-0 right-0 h-px bg-gray-300" />
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-              {steps.map((s, i) => (
-                <Reveal key={i} delay={i * 80}>
-                  <div className="text-center relative">
-                    <div className="w-20 h-20 mx-auto bg-ink text-white font-display font-bold text-2xl flex items-center justify-center mb-5 relative z-10">
-                      {s.num}
-                    </div>
-                    <h3 className="font-display font-semibold text-base uppercase mb-2">{s.title}</h3>
-                    <p className="text-[11px] text-gray-500 leading-relaxed">{s.desc}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {steps.map((s, i) => (
+              <Reveal key={i} delay={i * 80}>
+                <div className="relative overflow-hidden rounded-xl group" style={{ height: 340 }}>
+                  {/* Background photo */}
+                  <img
+                    src={s.img}
+                    alt={s.title}
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  {/* Dark gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+                  {/* Number top-right */}
+                  <div className="absolute top-4 right-4 text-white/70 font-display font-bold text-lg leading-none">
+                    {s.num}
                   </div>
-                </Reveal>
-              ))}
-            </div>
+                  {/* Text bottom */}
+                  <div className="absolute bottom-0 left-0 right-0 p-5">
+                    <h3 className="font-display font-bold text-white text-base uppercase leading-snug mb-2">
+                      {s.title}
+                    </h3>
+                    <p className="text-white/75 text-[12px] leading-relaxed">{s.desc}</p>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
